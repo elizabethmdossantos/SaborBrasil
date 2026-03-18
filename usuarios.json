@@ -1,0 +1,63 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "nickname": "admin",
+      "senha": "$2b$12$e0WtPOfmW1XYPJsEXADSgOGgTPMVlzJY1JsBKGjTJ7T8f15.Cvkly",
+      "perfil": "admin"
+    },
+    {
+      "id": 2,
+      "nickname": "maria_chef",
+      "senha": "$2b$12$KvdVuiY9S.bqkCEP6.cETOJ.iK0UDXkW3p9n.uYVQKqdizRz3C3Ci",
+      "perfil": "comum"
+    },
+    {
+      "id": 3,
+      "nickname": "eliza",
+      "senha": "$2b$12$KgD97KwNCcZa86rLf9.EAOADvhRHG4qg/7IOVNU0OVW1KN2RSlWqu",
+      "perfil": "comum"
+    }
+  ],
+  "receitas": [
+    {
+      "id": 1,
+      "titulo": "Feijoada Completa",
+      "descricao": "A mais tradicional feijoada brasileira, com feijão preto, carnes defumadas e acompanhamentos clássicos.",
+      "imagem": "🍲",
+      "curtidas": [
+        "eliza"
+      ],
+      "comentarios": [
+        {
+          "id": 1,
+          "autor_id": 3,
+          "autor_nickname": "eliza",
+          "texto": "hummmm"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "titulo": "Coxinha Crocante",
+      "descricao": "Salgado recheado com frango desfiado temperado, empanado e frito até a perfeição dourada.",
+      "imagem": "🍗",
+      "curtidas": [
+        "eliza"
+      ],
+      "comentarios": []
+    },
+    {
+      "id": 3,
+      "titulo": "Brigadeiro Gourmet",
+      "descricao": "O clássico docinho brasileiro em versão premium, com chocolate belga e cobertura artesanal.",
+      "imagem": "🍫",
+      "curtidas": [
+        "eliza"
+      ],
+      "comentarios": []
+    }
+  ],
+  "proximo_comentario_id": 2,
+  "proximo_usuario_id": 4
+}
