@@ -138,13 +138,15 @@
         <div class="grupo-campo">
           <label for="login-senha">Senha</label>
           <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password"
-                 onkeydown="if(event.key==='Enter') submeterLogin()" />
+                onkeydown="if(event.key==='Enter') submeterLogin()" />
         </div>
 
         <!-- Mensagem de erro do login -->
         <div class="msg-erro" id="erro-login">
           ⚠️ <span id="texto-erro-login"></span>
         </div>
+
+        <div class="msg-sucesso" id="sucesso-login"></div>
 
         <button class="btn-submit-modal" onclick="submeterLogin()">Entrar</button>
       </div>
@@ -165,7 +167,10 @@
           <small>Deixe em branco para conta de usuário comum.</small>
         </div>
         <!-- Mensagem de erro/sucesso do cadastro -->
-        <div class="msg-erro"    id="erro-cadastro"><span id="texto-erro-cadastro"></span></div>
+        <div class="msg-erro"    id="erro-cadastro">
+          ⚠️ <span id="texto-erro-cadastro"></span>
+        </div>
+
         <div class="msg-sucesso" id="sucesso-cadastro"></div>
 
         <button class="btn-submit-modal" onclick="submeterCadastro()">Criar Conta</button>
@@ -207,10 +212,16 @@
 
 
     // ─── Funções do Modal ───────────────────────────────────────────────────
-    function abrirModal(aba = "login") {
+    function abrirModal(aba = "login", mensagemErro = "") {
       document.getElementById("modal-overlay").classList.add("visivel");
       trocarTab(aba);
       limparErros();
+
+      const containerErro = document.querySelector("#erro-login-modal");
+      if (containerErro && mensagemErro) {
+        containerErro.textContent = mensagemErro;
+        containerErro.style.display = "block"; // Garante que a div apareça
+  }
     }
 
     function fecharModal() {
@@ -275,7 +286,7 @@
       }
 
       try {
-        const resposta = await fetch("/login", {
+        const resposta = await fetch("{{ url_for('main.login') }}", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nickname, senha })
@@ -330,14 +341,14 @@
       }
       
       try {
-        const resposta = await fetch("/cadastrar", {
+        const resposta = await fetch("{{ url_for('main.cadastrar') }}", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             nickname: nickname, 
             senha: senha, 
             chave_admin: chaveAdmin 
-           })
+          })
         });
 
         const dados = await resposta.json();
@@ -375,12 +386,26 @@
 
 
     // ─── Logout ────────────────────────────────────────────────────────────
-    async function fazerLogout() {
-      await fetch("/logout", { method: "POST" });
-      usuarioAtual = null;
-      atualizarHeader();
-      location.reload();
+async function fazerLogout() {
+    try {
+        const response = await fetch("{{ url_for('main.logout') }}", { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const dados = await response.json();
+
+        if (response.ok) {
+            // Exibe a mensagem que veio do Python ("Logout realizado com sucesso!")
+            alert(dados.mensagem); 
+            
+            // Agora sim, redireciona ou atualiza a página
+            window.location.href = "/"; 
+        }
+    } catch (erro) {
+        console.error("Erro ao deslogar:", erro);
     }
+}
 
 
     // ─── Curtir ────────────────────────────────────────────────────────────
@@ -393,22 +418,27 @@
         // o modal deve abrir na aba de login.
         // Use a função abrirModal("login") aqui.
         // ===========================================================
+        alert("Você precisa estar logado para curtir esta receita.");
         abrirModal("login");
         return;
       }
 
-      try {
-        const resposta = await fetch(`/curtir/${receitaId}`, { method: "POST" });
-        const dados    = await resposta.json();
+    try {
+            const resposta = await fetch(`/curtir/${receitaId}`, { method: "POST" });
+            const dados    = await resposta.json();
 
-        if (resposta.ok) {
-          botao.querySelector(".contador-curtida").textContent = dados.total_curtidas;
-          botao.classList.toggle("ativo", dados.curtiu);
-        }
-      } catch (e) {
-        console.error("Erro ao curtir:", e);
-      }
+            if (resposta.ok) {
+              botao.querySelector(".contador-curtida").textContent = dados.total_curtidas;
+              botao.classList.toggle("ativo", dados.curtiu);
+            }
+              else if (resposta.status === 401) {
+                // Caso a sessão tenha expirado no meio do caminho
+                abrirModal("login", dados.erro);
+              }
+    } catch (e) {
+      console.error("Erro ao curtir:", e);
     }
+  }
 
 
     // ─── Toggle comentários ────────────────────────────────────────────────
@@ -418,6 +448,7 @@
         // TAREFA: Dispare o modal de login automaticamente
         // (mesma lógica do curtir)
         // ===========================================================
+        alert("Você precisa estar logado para comentar esta receita.")
         abrirModal("login");
         return;
       }

@@ -17,6 +17,6 @@ if __name__ == "__main__":
     else:
         print("=" * 50)
         print("  Sabor do Brasil — Servidor iniciado!")
-        print("  Acesse: http://127.0.0.1:5000")
+        print("  Acesse: http://127.0.0.1:8000")
         print("=" * 50)
-        app.run(debug=True)
+        app.run(debug=True, port=8000)

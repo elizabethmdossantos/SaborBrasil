@@ -33,7 +33,7 @@ def cadastrar():
     corpo = request.get_json()
     nickname = corpo.get("nickname", "").strip()
     senha = corpo.get("senha", "").strip()
-    chave_enviada = corpo.get("cahve_admin", "").strip()
+    chave_enviada = corpo.get("chave_admin", "").strip()
 
     # Validação básica dos campos
     if not nickname or not senha:
@@ -41,11 +41,7 @@ def cadastrar():
 
     dados = ler_dados()
 
-    if chave_enviada:
-        if chave_enviada == CHAVE_MESTRA_ADMIN:
-            perfil_final = "admin"
-        else:
-            perfil_final = "comum"
+    perfil_final = "admin" if chave_enviada == CHAVE_MESTRA_ADMIN else "comum"
 
     # Verifica se o nickname já existe
     for usuario in dados["usuarios"]:
@@ -100,9 +96,9 @@ def login():
         return jsonify({"erro": "Usuário ou senha incorreto"}), 401
 
     session["usuario"]  = {
-         "id": usuario_encontrado["id"],
-         "nickname": usuario_encontrado["nickname"],
-         "perfil": usuario_encontrado["perfil"]
+        "id": usuario_encontrado["id"],
+        "nickname": usuario_encontrado["nickname"],
+        "perfil": usuario_encontrado["perfil"]
     }
 
     return jsonify({"mensagem": "Login realizado!", "usuario": session["usuario"]})
