@@ -408,12 +408,12 @@ main {
 
   TODO: Descomente e complete a regra abaixo:
 */
-/*
+
 .grupo-campo input.campo-erro {
-  border-color: ???;    <-- qual cor deve usar?
-  background: ???;      <-- cor de fundo suave (opcional)
+  border-color: var(--erro);
+  background: var(--fundo);
 }
-*/
+
 
 .msg-erro {
   margin-top: 0.75rem;

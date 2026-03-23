@@ -265,6 +265,15 @@
       // A classe "campo-erro" deve ser estilizada no CSS com borda vermelha.
       // ===========================================================
 
+      if (!nickname || !senha) {
+        if (!nickname) document.getElementById("login-nickname").classList.add("campo-erro");
+        if (!senha) document.getElementById("login-senha").classList.add("campo-erro");
+      
+        document.getElementById("texto-erro-login").textContent = "Preencha todos os campos";
+        document.getElementById("erro-login").classList.add("visivel");
+        return;
+      }
+
       try {
         const resposta = await fetch("/login", {
           method: "POST",
@@ -282,6 +291,12 @@
           // 2. Adicione a classe "visivel" em #erro-login
           // 3. Adicione a classe "campo-erro" nos dois inputs de login
           // ===========================================================
+          
+          document.getElementById("texto-erro-login").textContent = dados.erro;
+          document.getElementById("erro-login").classList.add("visivel");
+          document.getElementById("login-nickname").classList.add("campo-erro");
+          document.getElementById("login-senha").classList.add("campo-erro");
+          
           console.error("Erro no login:", dados.erro);
           return;
         }
@@ -304,12 +319,25 @@
 
       const nickname = document.getElementById("cadastro-nickname").value.trim();
       const senha    = document.getElementById("cadastro-senha").value.trim();
-
+      const chaveAdmin = document.getElementById("cadastro-chave-admin").value.trim();
+      
+      if (!nickname || !senha) {
+        if (!nickname) document.getElementById("cadastro-nickname").classList.add("campo-erro");
+        if (!senha) document.getElementById("cadastro-senha").classList.add("campo-erro");
+        document.getElementById("texto-erro-cadastro").textContent = "Preencha todos os campos";
+        document.getElementById("erro-cadastro").classList.add("visivel");
+        return;
+      }
+      
       try {
         const resposta = await fetch("/cadastrar", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nickname, senha })
+          body: JSON.stringify({
+            nickname: nickname, 
+            senha: senha, 
+            chave_admin: chaveAdmin 
+           })
         });
 
         const dados = await resposta.json();
@@ -323,7 +351,12 @@
           // 3. Adicione "campo-erro" no campo de nickname e/ou senha
           //    conforme o tipo de erro
           // ===========================================================
-          console.error("Erro no cadastro:", dados.erro);
+          
+          document.getElementById("texto-erro-cadastro").textContent = dados.erro;
+          document.getElementById("erro-cadastro").classList.add("visivel");
+          if (dados.erro.includes("Chave")) {
+          document.getElementById("cadastro-chave-admin").classList.add("campo-erro");
+          }
           return;
         }
 
@@ -360,6 +393,7 @@
         // o modal deve abrir na aba de login.
         // Use a função abrirModal("login") aqui.
         // ===========================================================
+        abrirModal("login");
         return;
       }
 
@@ -384,6 +418,7 @@
         // TAREFA: Dispare o modal de login automaticamente
         // (mesma lógica do curtir)
         // ===========================================================
+        abrirModal("login");
         return;
       }
       const secao = document.getElementById(`comentarios-${receitaId}`);

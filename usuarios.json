@@ -17,6 +17,12 @@
       "nickname": "eliza",
       "senha": "$2b$12$KgD97KwNCcZa86rLf9.EAOADvhRHG4qg/7IOVNU0OVW1KN2RSlWqu",
       "perfil": "comum"
+    },
+    {
+      "id": 8,
+      "nickname": "monica",
+      "senha": "$2b$12$LAyArk4nIF8i5UB64qdgSusHSVuUpZfh6U/2UQNjURaDxk6Bb/NcK",
+      "perfil": "comum"
     }
   ],
   "receitas": [
@@ -26,7 +32,8 @@
       "descricao": "A mais tradicional feijoada brasileira, com feijão preto, carnes defumadas e acompanhamentos clássicos.",
       "imagem": "🍲",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "monica"
       ],
       "comentarios": [
         {
@@ -43,7 +50,8 @@
       "descricao": "Salgado recheado com frango desfiado temperado, empanado e frito até a perfeição dourada.",
       "imagem": "🍗",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "monica"
       ],
       "comentarios": []
     },
@@ -53,11 +61,12 @@
       "descricao": "O clássico docinho brasileiro em versão premium, com chocolate belga e cobertura artesanal.",
       "imagem": "🍫",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "monica"
       ],
       "comentarios": []
     }
   ],
-  "proximo_comentario_id": 2,
-  "proximo_usuario_id": 4
+  "proximo_comentario_id": 3,
+  "proximo_usuario_id": 9
 }
