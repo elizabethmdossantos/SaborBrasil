@@ -15,19 +15,7 @@
     {
       "id": 3,
       "nickname": "eliza",
-      "senha": "$2b$12$KgD97KwNCcZa86rLf9.EAOADvhRHG4qg/7IOVNU0OVW1KN2RSlWqu",
-      "perfil": "comum"
-    },
-    {
-      "id": 12,
-      "nickname": "monica",
-      "senha": "$2b$12$P3Bde8KLHvMj0KQ305sBYOIptSg85w1yQGJ3Q6SHzpWb7Gb0om0tq",
-      "perfil": "admin"
-    },
-    {
-      "id": 13,
-      "nickname": "jose",
-      "senha": "$2b$12$qMRp4QHUELNkKrTHHBxBDO/7RBw8BIoXeh1GlcxBe7gB.P/vVVqYu",
+      "senha": "$2b$12$n1I8SN5hBCotdGqE5cpQmOSITNCpFuQ.2KQqtUKt3U/czP0fG/OaC",
       "perfil": "admin"
     }
   ],
@@ -38,17 +26,9 @@
       "descricao": "A mais tradicional feijoada brasileira, com feijão preto, carnes defumadas e acompanhamentos clássicos.",
       "imagem": "🍲",
       "curtidas": [
-        "eliza",
-        "monica"
+        "eliza"
       ],
-      "comentarios": [
-        {
-          "id": 5,
-          "autor_id": 12,
-          "autor_nickname": "monica",
-          "texto": "aaaaaaaaaaa"
-        }
-      ]
+      "comentarios": []
     },
     {
       "id": 2,
@@ -56,17 +36,9 @@
       "descricao": "Salgado recheado com frango desfiado temperado, empanado e frito até a perfeição dourada.",
       "imagem": "🍗",
       "curtidas": [
-        "eliza",
-        "monica"
+        "eliza"
       ],
-      "comentarios": [
-        {
-          "id": 6,
-          "autor_id": 12,
-          "autor_nickname": "monica",
-          "texto": "fffffff"
-        }
-      ]
+      "comentarios": []
     },
     {
       "id": 3,
@@ -74,12 +46,11 @@
       "descricao": "O clássico docinho brasileiro em versão premium, com chocolate belga e cobertura artesanal.",
       "imagem": "🍫",
       "curtidas": [
-        "eliza",
-        "monica"
+        "eliza"
       ],
       "comentarios": []
     }
   ],
-  "proximo_comentario_id": 7,
-  "proximo_usuario_id": 14
+  "proximo_comentario_id": 1,
+  "proximo_usuario_id": 4
 }

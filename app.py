@@ -1,6 +1,7 @@
 import os
 from flask import Flask
-from controllers.auth_controller import main_bp
+from controllers.main_controller import main_bp
+from controllers.receitas_controller import receitas_bp
 
 app = Flask(__name__)
 
@@ -8,6 +9,7 @@ app = Flask(__name__)
 app.secret_key = "sabor_do_brasil_chave_secreta_2024"
 
 app.register_blueprint(main_bp)
+app.register_blueprint(receitas_bp)
 
 
 if __name__ == "__main__":
