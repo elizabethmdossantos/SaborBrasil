@@ -5,7 +5,7 @@ from utils.validacoes import hash_senha, verificar_senha
 main_bp = Blueprint('main', __name__)
 
 # Chave secreta para criar contas de administrador
-CHAVE_MESTRA_ADMIN = "receita_secreta_2024"
+CHAVE_MESTRA_ADMIN = "receita123"
 
 # =============================================================================
 #   ROTAS DA APLICAÇÃO

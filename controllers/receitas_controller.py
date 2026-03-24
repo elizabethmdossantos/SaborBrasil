@@ -4,6 +4,7 @@ from utils.validacoes import usuario_pode_editar
 
 receitas_bp = Blueprint('receitas', __name__)
 
+
 @receitas_bp.route("/curtir/<int:receita_id>", methods=["POST"])
 def curtir(receita_id: int):
     """
@@ -101,3 +102,38 @@ def excluir_comentario(comentario_id: int):
                     return jsonify({"erro": "Sem permissão para excluir este comentário"}), 403
 
     return jsonify({"erro": "Comentário não encontrado"}), 404
+
+
+@receitas_bp.route("/receitas/adicionar", methods=["POST"])
+def adicionar_receita():
+    usuario = session.get("usuario")
+    
+    # 1. Validação de Segurança: Só admin entra
+    if not usuario or usuario.get("perfil") != "admin":
+        return jsonify({"erro": "Acesso negado. Apenas administradores podem adicionar receitas."}), 403
+
+    corpo = request.get_json()
+    titulo = corpo.get("titulo", "").strip()
+    descricao = corpo.get("descricao", "").strip()
+    imagem = corpo.get("imagem", "🍳") # Emoji padrão se não enviar
+
+    if not titulo or not descricao:
+        return jsonify({"erro": "Título e descrição são obrigatórios"}), 400
+
+    dados = ler_dados()
+
+    # 2. Criar o novo objeto de receita
+    nova_receita = {
+        "id": len(dados["receitas"]) + 1, # Lógica simples de ID
+        "titulo": titulo,
+        "descricao": descricao,
+        "imagem": imagem,
+        "curtidas": [],
+        "comentarios": []
+    }
+
+    # 3. Persistência
+    dados["receitas"].append(nova_receita)
+    salvar_dados(dados)
+
+    return jsonify({"mensagem": "Receita adicionada com sucesso!", "receita": nova_receita}), 201

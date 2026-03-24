@@ -20,6 +20,11 @@
     </a>
 
     <div class="nav-acoes">
+      {% if usuario and usuario.perfil == 'admin' %}
+        <button class="btn btn-laranja" onclick="abrirModalCadastroReceita()">
+        ➕ Nova Receita
+        </button>
+      {% endif %}
       <span id="info-usuario"></span>
       <span id="badge-perfil"></span>
       <button id="btn-abrir-modal" class="btn btn-branco" onclick="abrirModal('login')">
@@ -65,6 +70,7 @@
             >
               💬 {{ receita.comentarios | length }}
             </button>
+
           </div>
         </div>
 
@@ -179,6 +185,31 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════
+      ADICIONAR NOVA RECEITA
+  ═══════════════════════════════════════════════════ -->
+
+  <div class="modal-overlay" id="modal-receita">
+  <div class="modal">
+    <div class="modal-cabecalho">
+      <h2 class="modal-titulo">Nova Receita 🍲</h2>
+      <button class="btn-fechar-modal" onclick="fecharModalReceita()">✕</button>
+    </div>
+    <div class="grupo-campo">
+      <label>Título da Receita</label>
+      <input type="text" id="rec-titulo" placeholder="Ex: Pão de Queijo Mineiro">
+    </div>
+    <div class="grupo-campo">
+      <label>Descrição</label>
+      <input type="text" id="rec-descricao" placeholder="Conte um pouco sobre o prato">
+    </div>
+    <div class="grupo-campo">
+      <label>Emoji/Ícone</label>
+      <input type="text" id="rec-imagem" placeholder="Ex: 🧀">
+    </div>
+    <button class="btn-submit-modal" onclick="submeterNovaReceita()">Publicar Receita</button>
+  </div>
+</div>
 
   <!-- ═══════════════════════════════════════════════════
       JAVASCRIPT — LÓGICA DO FRONT-END
@@ -511,6 +542,36 @@ async function fazerLogout() {
       } catch (e) {
         console.error("Erro ao excluir:", e);
       }
+    }
+
+    // ─── aDICIONAR NOVA RECEITA ────────────────────────────────────────────────
+
+    function abrirModalCadastroReceita() {
+    document.getElementById("modal-receita").classList.add("visivel");
+    }
+
+    function fecharModalReceita() {
+        document.getElementById("modal-receita").classList.remove("visivel");
+    }
+
+    async function submeterNovaReceita() {
+        const titulo = document.getElementById("rec-titulo").value;
+        const descricao = document.getElementById("rec-descricao").value;
+        const imagem = document.getElementById("rec-imagem").value;
+
+        const resposta = await fetch("/receitas/adicionar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ titulo, descricao, imagem })
+        });
+
+        if (resposta.ok) {
+            alert("Receita publicada!");
+            location.reload(); // Recarrega para mostrar a nova receita no grid
+        } else {
+            const erro = await resposta.json();
+            alert(erro.erro);
+        }
     }
 
   </script>
