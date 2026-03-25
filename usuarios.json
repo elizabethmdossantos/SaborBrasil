@@ -17,6 +17,12 @@
       "nickname": "eliza",
       "senha": "$2b$12$n1I8SN5hBCotdGqE5cpQmOSITNCpFuQ.2KQqtUKt3U/czP0fG/OaC",
       "perfil": "admin"
+    },
+    {
+      "id": 4,
+      "nickname": "joao",
+      "senha": "$2b$12$Qiw9wtA.O14ImCqNB.ZUG.87.FkJ/qey84sNuVdsrC8GDvXoDDGIS",
+      "perfil": "comum"
     }
   ],
   "receitas": [
@@ -26,7 +32,8 @@
       "descricao": "A mais tradicional feijoada brasileira, com feijão preto, carnes defumadas e acompanhamentos clássicos.",
       "imagem": "🍲",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "joao"
       ],
       "comentarios": []
     },
@@ -36,7 +43,8 @@
       "descricao": "Salgado recheado com frango desfiado temperado, empanado e frito até a perfeição dourada.",
       "imagem": "🍗",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "joao"
       ],
       "comentarios": []
     },
@@ -46,7 +54,8 @@
       "descricao": "O clássico docinho brasileiro em versão premium, com chocolate belga e cobertura artesanal.",
       "imagem": "🍫",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "joao"
       ],
       "comentarios": []
     },
@@ -56,11 +65,12 @@
       "descricao": "O melhor pão de queijo tradicional mineiro",
       "imagem": "🧀",
       "curtidas": [
-        "eliza"
+        "eliza",
+        "joao"
       ],
       "comentarios": []
     }
   ],
-  "proximo_comentario_id": 1,
-  "proximo_usuario_id": 4
+  "proximo_comentario_id": 2,
+  "proximo_usuario_id": 5
 }

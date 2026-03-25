@@ -47,10 +47,14 @@
       {% for receita in receitas %}
       <div class="card-receita" data-id="{{ receita.id }}">
 
-        <div class="card-imagem">{{ receita.imagem }}</div>
+        <div class="card-imagem">{{ receita.imagem }}
+        </div>
 
         <div class="card-corpo">
+          <div class="card-header-flex">
           <h2 class="card-titulo">{{ receita.titulo }}</h2>
+      </div>
+
           <p class="card-descricao">{{ receita.descricao }}</p>
 
           <div class="card-acoes">
@@ -70,6 +74,17 @@
             >
               💬 {{ receita.comentarios | length }}
             </button>
+          
+          <div class="card-excluir">
+          {% if usuario and usuario.perfil == 'admin' %}
+          <button 
+          class="btn-excluir-receita"
+          onclick="excluirReceita({{ receita.id }})"
+          title="Excluir Receita">
+          🗑️
+          </button>
+        {% endif %}
+          </div>
 
           </div>
         </div>
@@ -103,7 +118,6 @@
                 onclick="excluirComentario({{ comentario.id }})"
                 title="Excluir comentário"
               >
-                🗑
               </button>
               {% endif %}
             </div>
@@ -209,7 +223,29 @@
     </div>
     <button class="btn-submit-modal" onclick="submeterNovaReceita()">Publicar Receita</button>
   </div>
-</div>
+  </div>
+
+  <div class="modal-overlay" id="modal-receita">
+  <div class="modal">
+    <div class="modal-cabecalho">
+      <h2 class="modal-titulo">Nova Receita 🍲</h2>
+      <button class="btn-fechar-modal" onclick="fecharModalReceita()">✕</button>
+    </div>
+    <div class="grupo-campo">
+      <label>Título da Receita</label>
+      <input type="text" id="rec-titulo" placeholder="Ex: Pão de Queijo Mineiro">
+    </div>
+    <div class="grupo-campo">
+      <label>Descrição</label>
+      <input type="text" id="rec-descricao" placeholder="Conte um pouco sobre o prato">
+    </div>
+    <div class="grupo-campo">
+      <label>Emoji/Ícone</label>
+      <input type="text" id="rec-imagem" placeholder="Ex: 🧀">
+    </div>
+    <button class="btn-submit-modal" onclick="submeterNovaReceita()">Publicar Receita</button>
+  </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════
       JAVASCRIPT — LÓGICA DO FRONT-END
@@ -544,7 +580,7 @@ async function fazerLogout() {
       }
     }
 
-    // ─── aDICIONAR NOVA RECEITA ────────────────────────────────────────────────
+    // ─── ADICIONAR NOVA RECEITA ────────────────────────────────────────────────
 
     function abrirModalCadastroReceita() {
     document.getElementById("modal-receita").classList.add("visivel");
@@ -573,6 +609,34 @@ async function fazerLogout() {
             alert(erro.erro);
         }
     }
+
+    // ─── Excluir Receita (Admin Only) ──────────────────────────────────────────
+async function excluirReceita(receitaId) {
+  if (!confirm("⚠️ Você tem certeza que deseja excluir esta receita permanentemente?")) {
+    return;
+  }
+
+  try {
+    const resposta = await fetch(`/receitas/excluir/${receitaId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const dados = await resposta.json();
+
+    if (resposta.ok) {
+      alert("Receita removida com sucesso!");
+      // Remove o card da tela sem precisar recarregar a página
+      const card = document.querySelector(`.card-receita[data-id="${receitaId}"]`);
+      if (card) card.remove();
+    } else {
+      alert(dados.erro || "Erro ao excluir a receita.");
+    }
+  } catch (e) {
+    console.error("Erro na comunicação com o servidor:", e);
+    alert("Erro de conexão ao tentar excluir.");
+  }
+}
 
   </script>
 </body>

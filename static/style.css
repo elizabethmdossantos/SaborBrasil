@@ -198,6 +198,11 @@ main {
   border-top: 1px solid var(--borda);
 }
 
+.card-excluir {
+  display: flex;
+  margin-left: auto;
+}
+
 .btn-curtir {
   background: none;
   border: 1.5px solid var(--borda);
@@ -234,7 +239,22 @@ main {
   gap: 5px;
   transition: all 0.2s;
 }
-.btn-comentar:hover { border-color: var(--laranja); color: var(--laranja); }
+.btn-comentar:hover { 
+  border-color: var(--laranja); 
+  color: var(--laranja); 
+}
+
+.btn-excluir-receita{
+  background: #b91c1c;
+  border: 1.5px solid var(--erro);
+  border-radius: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
 
 /* =====================================================
     SEÇÃO DE COMENTÁRIOS (dentro do card)

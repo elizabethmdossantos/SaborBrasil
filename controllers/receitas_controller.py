@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify, session
 from models.usuario import ler_dados, salvar_dados
 from utils.validacoes import usuario_pode_editar
+import json
 
 receitas_bp = Blueprint('receitas', __name__)
 
+ARQUIVO_DADOS = "usuarios.json"
 
 @receitas_bp.route("/curtir/<int:receita_id>", methods=["POST"])
 def curtir(receita_id: int):
@@ -137,3 +139,32 @@ def adicionar_receita():
     salvar_dados(dados)
 
     return jsonify({"mensagem": "Receita adicionada com sucesso!", "receita": nova_receita}), 201
+
+@receitas_bp.route('/receitas/excluir/<int:id>', methods=['DELETE'])
+def excluir_receita(id): # <--- Mude de 'receita_id' para 'id'
+    usuario = session.get('usuario')
+    if not usuario or usuario.get('perfil') != 'admin':
+        return jsonify({"erro": "Acesso negado"}), 403
+    
+    try:
+        with open(ARQUIVO_DADOS, 'r', encoding='utf-8') as f:
+            dados = json.load(f)
+
+        receitas_originais = dados.get('receitas', [])
+        
+        # Aqui também usamos 'id' para filtrar
+        nova_lista = [r for r in receitas_originais if r['id'] != id]
+
+        if len(receitas_originais) == len(nova_lista):
+            return jsonify({"erro": "Receita não encontrada"}), 404
+        
+        dados['receitas'] = nova_lista
+    
+        with open(ARQUIVO_DADOS, 'w', encoding='utf-8') as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+
+        return jsonify({"mensagem": "Receita excluída com sucesso!"}), 200
+
+    except Exception as e:
+        print(f"Erro ao deletar: {e}")
+        return jsonify({"erro": "Erro interno ao processar o arquivo"}), 500
