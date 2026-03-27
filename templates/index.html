@@ -75,13 +75,14 @@
               💬 {{ receita.comentarios | length }}
             </button>
           
+          <!-- Botão Excluir Receita -->
           <div class="card-excluir">
           {% if usuario and usuario.perfil == 'admin' %}
-          <button 
-          class="btn-excluir-receita"
-          onclick="excluirReceita({{ receita.id }})"
-          title="Excluir Receita">
-          🗑️
+            <button 
+            class="btn-excluir-receita"
+            onclick="excluirReceita({{ receita.id }})"
+            title="Excluir Receita">
+            🗑️
           </button>
         {% endif %}
           </div>
@@ -110,16 +111,16 @@
             <div class="item-comentario" id="comentario-{{ comentario.id }}">
               <div>
                 <div class="comentario-autor">@{{ comentario.autor_nickname }}</div>
-                <div class="comentario-texto">{{ comentario.texto }}</div>
+                <div class="comentario-texto" id="texto-conteudo-{{ comentario.id }}">{{ comentario.texto }}</div>
               </div>
-              {% if usuario and (usuario.perfil == 'admin' or usuario.id == comentario.autor_id) %}
-              <button
-                class="btn btn-perigo"
-                onclick="excluirComentario({{ comentario.id }})"
-                title="Excluir comentário"
-              >
-              </button>
-              {% endif %}
+              
+              <div class="comentario-acoes">
+                {% if usuario and (usuario.perfil == 'admin' or usuario.id == comentario.autor_id) %}
+                  <button class="btn-editar-comentario" onclick="prepararEdicao({{ comentario.id }})" title="Editar">✏️</button>
+                  
+                  <button class="btn-excluir-comentario" onclick="excluirComentario({{ comentario.id }})" title="Excluir">🗑️</button>
+                {% endif %}
+              </div>
             </div>
             {% endfor %}
           </div>
@@ -225,27 +226,6 @@
   </div>
   </div>
 
-  <div class="modal-overlay" id="modal-receita">
-  <div class="modal">
-    <div class="modal-cabecalho">
-      <h2 class="modal-titulo">Nova Receita 🍲</h2>
-      <button class="btn-fechar-modal" onclick="fecharModalReceita()">✕</button>
-    </div>
-    <div class="grupo-campo">
-      <label>Título da Receita</label>
-      <input type="text" id="rec-titulo" placeholder="Ex: Pão de Queijo Mineiro">
-    </div>
-    <div class="grupo-campo">
-      <label>Descrição</label>
-      <input type="text" id="rec-descricao" placeholder="Conte um pouco sobre o prato">
-    </div>
-    <div class="grupo-campo">
-      <label>Emoji/Ícone</label>
-      <input type="text" id="rec-imagem" placeholder="Ex: 🧀">
-    </div>
-    <button class="btn-submit-modal" onclick="submeterNovaReceita()">Publicar Receita</button>
-  </div>
-  </div>
 
   <!-- ═══════════════════════════════════════════════════
       JAVASCRIPT — LÓGICA DO FRONT-END
@@ -333,16 +313,6 @@
       const nickname = document.getElementById("login-nickname").value.trim();
       const senha    = document.getElementById("login-senha").value.trim();
 
-      // ===================== TODO (FRONTEND) =====================
-      // TAREFA: Implemente a exibição de erros visuais
-      //
-      // Se os campos estiverem vazios, adicione a classe "campo-erro"
-      // nos inputs correspondentes. Exemplo:
-      //   document.getElementById("login-nickname").classList.add("campo-erro");
-      //
-      // A classe "campo-erro" deve ser estilizada no CSS com borda vermelha.
-      // ===========================================================
-
       if (!nickname || !senha) {
         if (!nickname) document.getElementById("login-nickname").classList.add("campo-erro");
         if (!senha) document.getElementById("login-senha").classList.add("campo-erro");
@@ -362,14 +332,6 @@
         const dados = await resposta.json();
 
         if (!resposta.ok) {
-          // ===================== TODO (FRONTEND) =====================
-          // TAREFA: Exiba a mensagem de erro e aplique borda vermelha
-          //
-          // 1. Mostre dados.erro no elemento #texto-erro-login
-          // 2. Adicione a classe "visivel" em #erro-login
-          // 3. Adicione a classe "campo-erro" nos dois inputs de login
-          // ===========================================================
-          
           document.getElementById("texto-erro-login").textContent = dados.erro;
           document.getElementById("erro-login").classList.add("visivel");
           document.getElementById("login-nickname").classList.add("campo-erro");
@@ -420,16 +382,7 @@
 
         const dados = await resposta.json();
 
-        if (!resposta.ok) {
-          // ===================== TODO (FRONTEND) =====================
-          // TAREFA: Exiba a mensagem de erro e aplique borda vermelha
-          //
-          // 1. Mostre dados.erro no elemento #texto-erro-cadastro
-          // 2. Adicione a classe "visivel" em #erro-cadastro
-          // 3. Adicione "campo-erro" no campo de nickname e/ou senha
-          //    conforme o tipo de erro
-          // ===========================================================
-          
+        if (!resposta.ok) {     
           document.getElementById("texto-erro-cadastro").textContent = dados.erro;
           document.getElementById("erro-cadastro").classList.add("visivel");
           if (dados.erro.includes("Chave")) {
@@ -453,38 +406,32 @@
 
 
     // ─── Logout ────────────────────────────────────────────────────────────
-async function fazerLogout() {
-    try {
-        const response = await fetch("{{ url_for('main.logout') }}", { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
+    async function fazerLogout() {
+        try {
+            const response = await fetch("{{ url_for('main.logout') }}", { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-        const dados = await response.json();
+            const dados = await response.json();
 
-        if (response.ok) {
-            // Exibe a mensagem que veio do Python ("Logout realizado com sucesso!")
-            alert(dados.mensagem); 
-            
-            // Agora sim, redireciona ou atualiza a página
-            window.location.href = "/"; 
+            if (response.ok) {
+                // Exibe a mensagem que veio do Python ("Logout realizado com sucesso!")
+                alert(dados.mensagem); 
+                
+                // Agora sim, redireciona ou atualiza a página
+                window.location.href = "/"; 
+            }
+        } catch (erro) {
+            console.error("Erro ao deslogar:", erro);
         }
-    } catch (erro) {
-        console.error("Erro ao deslogar:", erro);
     }
-}
 
 
     // ─── Curtir ────────────────────────────────────────────────────────────
     async function curtir(receitaId, botao) {
       if (!usuarioAtual) {
-        // ===================== TODO (FRONTEND) =====================
-        // TAREFA: Dispare o modal de login automaticamente
-        //
-        // Quando um usuário não logado tenta curtir,
-        // o modal deve abrir na aba de login.
-        // Use a função abrirModal("login") aqui.
-        // ===========================================================
+
         alert("Você precisa estar logado para curtir esta receita.");
         abrirModal("login");
         return;
@@ -505,16 +452,13 @@ async function fazerLogout() {
     } catch (e) {
       console.error("Erro ao curtir:", e);
     }
-  }
+    }
 
 
     // ─── Toggle comentários ────────────────────────────────────────────────
     function toggleComentarios(receitaId) {
       if (!usuarioAtual) {
-        // ===================== TODO (FRONTEND) =====================
-        // TAREFA: Dispare o modal de login automaticamente
-        // (mesma lógica do curtir)
-        // ===========================================================
+
         alert("Você precisa estar logado para comentar esta receita.")
         abrirModal("login");
         return;
@@ -551,7 +495,7 @@ async function fazerLogout() {
               <div class="comentario-autor">@${dados.comentario.autor_nickname}</div>
               <div class="comentario-texto">${dados.comentario.texto}</div>
             </div>
-            <button class="btn btn-perigo" onclick="excluirComentario(${dados.comentario.id})" title="Excluir comentário">🗑</button>
+            <button class="btn-excluir-comentario" onclick="excluirComentario(${dados.comentario.id})" title="Excluir comentário">🗑</button>
           `;
           lista.appendChild(novoItem);
         }
@@ -560,6 +504,48 @@ async function fazerLogout() {
       }
     }
 
+    // ─── Editar comentário ─────────────────────────────────────────────────
+    function prepararEdicao(comentarioId) {
+        const divTexto = document.getElementById(`texto-conteudo-${comentarioId}`);
+        const textoAtual = divTexto.textContent;
+
+        // Substitui o texto por um input e botões de salvar/cancelar
+        divTexto.innerHTML = `
+            <input type="text" id="edit-input-${comentarioId}" class="input-edicao" value="${textoAtual}">
+            <div class="botoes-edicao">
+                <button onclick="salvarEdicao(${comentarioId})" class="btn-salvar">Salvar</button>
+                <button onclick="cancelarEdicao(${comentarioId}, '${textoAtual}')" class="btn-cancelar">Cancelar</button>
+            </div>
+        `;
+    }
+
+    function cancelarEdicao(comentarioId, textoOriginal) {
+        document.getElementById(`texto-conteudo-${comentarioId}`).textContent = textoOriginal;
+    }
+
+    async function salvarEdicao(comentarioId) {
+        const novoTexto = document.getElementById(`edit-input-${comentarioId}`).value.trim();
+
+        if (!novoTexto) return;
+
+        try {
+            const resposta = await fetch(`/comentario/${comentarioId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ texto: novoTexto })
+            });
+
+            const dados = await resposta.json();
+
+            if (resposta.ok) {
+                document.getElementById(`texto-conteudo-${comentarioId}`).textContent = dados.texto;
+            } else {
+                alert(dados.erro);
+            }
+        } catch (e) {
+            console.error("Erro ao editar:", e);
+        }
+    }
 
     // ─── Excluir comentário ────────────────────────────────────────────────
     async function excluirComentario(comentarioId) {
@@ -611,33 +597,32 @@ async function fazerLogout() {
     }
 
     // ─── Excluir Receita (Admin Only) ──────────────────────────────────────────
-async function excluirReceita(receitaId) {
-  if (!confirm("⚠️ Você tem certeza que deseja excluir esta receita permanentemente?")) {
-    return;
-  }
+    async function excluirReceita(receitaId) {
+      if (!confirm("⚠️ Você tem certeza que deseja excluir esta receita permanentemente?")) {
+        return;
+      }
 
-  try {
-    const resposta = await fetch(`/receitas/excluir/${receitaId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" }
-    });
+      try {
+        const resposta = await fetch(`/receitas/excluir/${receitaId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" }
+        });
 
-    const dados = await resposta.json();
+        const dados = await resposta.json();
 
-    if (resposta.ok) {
-      alert("Receita removida com sucesso!");
-      // Remove o card da tela sem precisar recarregar a página
-      const card = document.querySelector(`.card-receita[data-id="${receitaId}"]`);
-      if (card) card.remove();
-    } else {
-      alert(dados.erro || "Erro ao excluir a receita.");
+        if (resposta.ok) {
+          alert("Receita removida com sucesso!");
+          // Remove o card da tela sem precisar recarregar a página
+          const card = document.querySelector(`.card-receita[data-id="${receitaId}"]`);
+          if (card) card.remove();
+        } else {
+          alert(dados.erro || "Erro ao excluir a receita.");
+        }
+      } catch (e) {
+        console.error("Erro na comunicação com o servidor:", e);
+        alert("Erro de conexão ao tentar excluir.");
+      }
     }
-  } catch (e) {
-    console.error("Erro na comunicação com o servidor:", e);
-    alert("Erro de conexão ao tentar excluir.");
-  }
-}
-
   </script>
 </body>
 </html>

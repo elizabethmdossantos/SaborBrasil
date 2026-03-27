@@ -9,10 +9,7 @@ ARQUIVO_DADOS = "usuarios.json"
 
 @receitas_bp.route("/curtir/<int:receita_id>", methods=["POST"])
 def curtir(receita_id: int):
-    """
-    Adiciona ou remove a curtida do usuário logado em uma receita (toggle).
-    Se o usuário não estiver logado, retorna erro 401.
-    """
+
     usuario = session.get("usuario")
     if not usuario:
         return jsonify({"erro": "Você precisa estar logado para curtir"}), 401
@@ -40,10 +37,7 @@ def curtir(receita_id: int):
 
 @receitas_bp.route("/comentar/<int:receita_id>", methods=["POST"])
 def comentar(receita_id: int):
-    """
-    Adiciona um comentário à receita.
-    Requer usuário logado.
-    """
+
     usuario = session.get("usuario")
     if not usuario:
         return jsonify({"erro": "Você precisa estar logado para comentar"}), 401
@@ -75,17 +69,37 @@ def comentar(receita_id: int):
     return jsonify({"erro": "Receita não encontrada"}), 404
 
 
+@receitas_bp.route("/comentario/<int:comentario_id>", methods=["PUT"])
+def editar_comentario(comentario_id: int):
+    usuario = session.get("usuario")
+    if not usuario:
+        return jsonify({"erro": "Você precisa estar logado"}), 401
+
+    corpo = request.get_json()
+    novo_texto = corpo.get("texto", "").strip()
+
+    if not novo_texto:
+        return jsonify({"erro": "O comentário não pode estar vazio"}), 400
+
+    dados = ler_dados()
+
+    for receita in dados["receitas"]:
+        for comentario in receita["comentarios"]:
+            if comentario["id"] == comentario_id:
+                # Verifica se é o autor ou admin
+                if usuario["id"] == comentario["autor_id"] or usuario.get("perfil") == "admin":
+                    comentario["texto"] = novo_texto
+                    salvar_dados(dados)
+                    return jsonify({"mensagem": "Comentário editado!", "texto": novo_texto})
+                else:
+                    return jsonify({"erro": "Sem permissão para editar"}), 403
+
+    return jsonify({"erro": "Comentário não encontrado"}), 404
+
+
 @receitas_bp.route("/comentario/<int:comentario_id>", methods=["DELETE"])
 def excluir_comentario(comentario_id: int):
-    """
-    Exclui um comentário pelo ID.
 
-    Regras:
-        - Admin pode excluir qualquer comentário.
-        - Usuário comum só pode excluir seu próprio comentário.
-
-    (Utiliza a função usuario_pode_editar() que você implementou.)
-    """
     usuario = session.get("usuario")
     if not usuario:
         return jsonify({"erro": "Você precisa estar logado"}), 401
@@ -110,23 +124,21 @@ def excluir_comentario(comentario_id: int):
 def adicionar_receita():
     usuario = session.get("usuario")
     
-    # 1. Validação de Segurança: Só admin entra
     if not usuario or usuario.get("perfil") != "admin":
         return jsonify({"erro": "Acesso negado. Apenas administradores podem adicionar receitas."}), 403
 
     corpo = request.get_json()
     titulo = corpo.get("titulo", "").strip()
     descricao = corpo.get("descricao", "").strip()
-    imagem = corpo.get("imagem", "🍳") # Emoji padrão se não enviar
+    imagem = corpo.get("imagem", "🍳")
 
     if not titulo or not descricao:
         return jsonify({"erro": "Título e descrição são obrigatórios"}), 400
 
     dados = ler_dados()
 
-    # 2. Criar o novo objeto de receita
     nova_receita = {
-        "id": len(dados["receitas"]) + 1, # Lógica simples de ID
+        "id": len(dados["receitas"]) + 1,
         "titulo": titulo,
         "descricao": descricao,
         "imagem": imagem,
@@ -134,14 +146,13 @@ def adicionar_receita():
         "comentarios": []
     }
 
-    # 3. Persistência
     dados["receitas"].append(nova_receita)
     salvar_dados(dados)
 
     return jsonify({"mensagem": "Receita adicionada com sucesso!", "receita": nova_receita}), 201
 
 @receitas_bp.route('/receitas/excluir/<int:id>', methods=['DELETE'])
-def excluir_receita(id): # <--- Mude de 'receita_id' para 'id'
+def excluir_receita(id):
     usuario = session.get('usuario')
     if not usuario or usuario.get('perfil') != 'admin':
         return jsonify({"erro": "Acesso negado"}), 403
@@ -152,7 +163,6 @@ def excluir_receita(id): # <--- Mude de 'receita_id' para 'id'
 
         receitas_originais = dados.get('receitas', [])
         
-        # Aqui também usamos 'id' para filtrar
         nova_lista = [r for r in receitas_originais if r['id'] != id]
 
         if len(receitas_originais) == len(nova_lista):

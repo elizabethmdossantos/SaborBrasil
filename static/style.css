@@ -244,16 +244,32 @@ main {
   color: var(--laranja); 
 }
 
-.btn-excluir-receita{
-  background: #b91c1c;
-  border: 1.5px solid var(--erro);
-  border-radius: 8px;
-  padding: 7px 12px;
-  cursor: pointer;
+.input-edicao {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+.botoes-edicao {
+  margin-top: 5px;
   display: flex;
-  align-items: center;
   gap: 5px;
-  transition: all 0.2s;
+}
+.btn-salvar { 
+  color: green; 
+  cursor: pointer; 
+  background: none; 
+  border: none; 
+  font-size: 12px; 
+}
+
+.btn-cancelar { 
+  color: gray; 
+  cursor: pointer; 
+  background: none; 
+  border: none; 
+  font-size: 12px; 
 }
 
 /* =====================================================

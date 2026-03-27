@@ -35,7 +35,14 @@
         "eliza",
         "joao"
       ],
-      "comentarios": []
+      "comentarios": [
+        {
+          "id": 3,
+          "autor_id": 4,
+          "autor_nickname": "joao",
+          "texto": "eeee"
+        }
+      ]
     },
     {
       "id": 2,
@@ -46,7 +53,14 @@
         "eliza",
         "joao"
       ],
-      "comentarios": []
+      "comentarios": [
+        {
+          "id": 4,
+          "autor_id": 3,
+          "autor_nickname": "eliza",
+          "texto": "aaaaa"
+        }
+      ]
     },
     {
       "id": 3,
@@ -71,6 +85,6 @@
       "comentarios": []
     }
   ],
-  "proximo_comentario_id": 2,
+  "proximo_comentario_id": 6,
   "proximo_usuario_id": 5
 }

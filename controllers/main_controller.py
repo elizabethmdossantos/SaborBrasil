@@ -21,15 +21,7 @@ def index():
 
 @main_bp.route("/cadastrar", methods=["POST"])
 def cadastrar():
-    """
-    Rota de cadastro de novo usuário.
 
-    Recebe via JSON: { "nickname": "...", "senha": "..." }
-    Retorna JSON com sucesso ou mensagem de erro.
-
-    IMPORTANTE: A senha NUNCA deve ser salva em texto puro!
-    Use a função hash_senha() que você implementou.
-    """
     corpo = request.get_json()
     nickname = corpo.get("nickname", "").strip()
     senha = corpo.get("senha", "").strip()
@@ -67,14 +59,7 @@ def cadastrar():
 
 @main_bp.route("/login", methods=["POST"])
 def login():
-    """
-    Rota de autenticação.
 
-    Recebe via JSON: { "nickname": "...", "senha": "..." }
-    Em caso de sucesso, salva o usuário na sessão Flask.
-
-    (Peso: 30% — Linguagem de Programação / estruturas condicionais)
-    """
     corpo = request.get_json()
     nickname = corpo.get("nickname", "").strip()
     senha = corpo.get("senha", "").strip()
